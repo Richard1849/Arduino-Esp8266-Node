@@ -1,15 +1,11 @@
 # Arduino-Esp8266-Node-Demo
 Arduino板使用Esp8266连接Tcp服务器，并且实现收发数据。
 
----
-
 
 
 ## 说明
 
 由于该项目使用的arduino板是uno板，不支持esp8266库的编译，所以采用AT指令的形式连接TCP服务器。
-
----
 
 
 
@@ -17,13 +13,11 @@ Arduino板使用Esp8266连接Tcp服务器，并且实现收发数据。
 
 - esp8266需要先使用USB-TTL烧录固件初始化，并且将波特率设置为9600
 
-![1562489085032](C:\Users\TIMCOO~1\AppData\Local\Temp\1562489085032.png)
+![1562489085032](http://arduino365.com/wp-content/uploads/2016/09/Open-Live-WriterESP_D1C7Open-Live-Writer99dbc1c67383_14E1ATB2MlYLtXXXXXaIXpXXXXXXXXXX_14857792_thumb_thumb.jpg)
 
 - 烧录好固件后，将esp8266与arduino版连接，注意不要接5V的口，会直接烧坏。
 
-  ![1562489295712](C:\Users\TIMCOO~1\AppData\Local\Temp\1562489295712.png)
-
----
+  ![1562489295712](http://arduino365.com/wp-content/uploads/2017/06/Open-Live-WriterESP8266-01Arduino_ED1EESP8266arduino_bb_thumb.jpg)
 
 ## Arduino代码部分
 
@@ -96,6 +90,8 @@ Arduino板使用Esp8266连接Tcp服务器，并且实现收发数据。
 
 - 连接TCP服务器部分
 
+  
+
   ```C
     mySerial.println("AT+CIPSTART=\"TCP\",\"服务器地址\",端口"); // 连接TCP服务器AT指令
     while (!getWifiSerialData("Linked")); // 当返回Linked，表示连接成功
@@ -104,11 +100,28 @@ Arduino板使用Esp8266连接Tcp服务器，并且实现收发数据。
     mySerial.println("AT+CIPSEND"); // 发送数据
   ```
 
----
+- 接收服务端发送的数据部分
+
+  
+
+  ```C
+  String _server_data = ""; // 定义接收服务端发送的数据变量
+  
+  boolean getServerData() {                              //读取服务器反馈的数据
+    while (mySerial.available() > 0) {
+      _server_data += char(mySerial.read());   //get server data
+      delay(4);
+      _server_data.trim();
+    }
+    Serial.println(_server_data);
+  }
+  ```
+
+  
 
 ## TCP服务端主要部分
 
-- 基于node的服务端
+- 创建基于Node的服务端
 
   ```js
   var net = require("net"); // 引入net模块
@@ -120,8 +133,7 @@ Arduino板使用Esp8266连接Tcp服务器，并且实现收发数据。
    socket.write('server_data');
    //  监听data事件
    socket.on('data', function(data) {
-     ...
+     // ...
    })
   ```
 
-  
